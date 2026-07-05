@@ -139,4 +139,121 @@
         formError.textContent = msg;
         formError.hidden = false;
     }
+
+    /* ---------- Consulta por cédula ---------- */
+    var modalConsulta = document.getElementById('modal-consulta');
+    var btnAbrirConsulta = document.getElementById('abrir-consulta');
+
+    if (modalConsulta && btnAbrirConsulta) {
+        var formConsulta = document.getElementById('form-consulta');
+        var consultaError = document.getElementById('consulta-error');
+        var consultaResultado = document.getElementById('consulta-resultado');
+        var btnConsultar = document.getElementById('btn-consultar');
+
+        function abrirConsulta() {
+            formConsulta.reset();
+            consultaError.hidden = true;
+            consultaResultado.hidden = true;
+            consultaResultado.textContent = '';
+            formConsulta.hidden = false;
+            modalConsulta.hidden = false;
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () { modalConsulta.classList.add('abierto'); });
+            });
+            document.body.style.overflow = 'hidden';
+            setTimeout(function () {
+                formConsulta.querySelector('input[name="cedula"]').focus();
+            }, 450);
+        }
+
+        function cerrarConsulta() {
+            modalConsulta.classList.remove('abierto');
+            document.body.style.overflow = '';
+            setTimeout(function () { modalConsulta.hidden = true; }, 420);
+        }
+
+        btnAbrirConsulta.addEventListener('click', abrirConsulta);
+        modalConsulta.querySelectorAll('[data-cerrar-consulta]').forEach(function (el) {
+            el.addEventListener('click', cerrarConsulta);
+        });
+        document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape' && !modalConsulta.hidden) { cerrarConsulta(); }
+        });
+
+        formConsulta.addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            consultaError.hidden = true;
+
+            var datos = new FormData(formConsulta);
+            var cedula = String(datos.get('cedula') || '').replace(/\D/g, '');
+            if (!/^[0-9]{10}$/.test(cedula)) {
+                consultaError.textContent = 'La cédula debe tener 10 dígitos.';
+                consultaError.hidden = false;
+                return;
+            }
+            datos.set('cedula', cedula);
+            btnConsultar.disabled = true;
+
+            fetch('api/consulta.php', { method: 'POST', body: datos })
+                .then(function (res) { return res.json(); })
+                .then(function (json) {
+                    btnConsultar.disabled = false;
+                    if (!json.ok) {
+                        consultaError.textContent = json.error || 'Ocurrió un error. Intenta de nuevo.';
+                        consultaError.hidden = false;
+                        return;
+                    }
+                    pintarResultado(json);
+                })
+                .catch(function () {
+                    btnConsultar.disabled = false;
+                    consultaError.textContent = 'No pudimos conectar. Revisa tu internet e intenta otra vez.';
+                    consultaError.hidden = false;
+                });
+        });
+
+        function pintarResultado(json) {
+            consultaResultado.textContent = '';
+
+            if (!json.regalos || json.regalos.length === 0) {
+                var vacio = document.createElement('p');
+                vacio.className = 'resultado-vacio';
+                vacio.textContent = json.mensaje || 'No encontramos ninguna elección con esa cédula.';
+                consultaResultado.appendChild(vacio);
+            } else {
+                var saludo = document.createElement('p');
+                saludo.className = 'resultado-saludo';
+                saludo.textContent = 'Hola, ' + json.regalos[0].invitado + '. Esto es lo que elegiste:';
+                consultaResultado.appendChild(saludo);
+
+                json.regalos.forEach(function (r) {
+                    var item = document.createElement('div');
+                    item.className = 'resultado-item';
+
+                    if (r.imagen) {
+                        var img = document.createElement('img');
+                        img.src = r.imagen;
+                        img.alt = r.nombre;
+                        img.loading = 'lazy';
+                        item.appendChild(img);
+                    }
+
+                    var texto = document.createElement('div');
+                    var nombre = document.createElement('strong');
+                    nombre.textContent = r.nombre;
+                    texto.appendChild(nombre);
+
+                    var detalle = document.createElement('small');
+                    detalle.textContent = 'Elegido el ' + r.fecha + (r.precio ? ' · Ref. ' + r.precio : '');
+                    texto.appendChild(detalle);
+
+                    item.appendChild(texto);
+                    consultaResultado.appendChild(item);
+                });
+            }
+
+            formConsulta.hidden = true;
+            consultaResultado.hidden = false;
+        }
+    }
 })();

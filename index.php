@@ -87,10 +87,16 @@ $csrf     = csrf_token();
         </div>
     </div>
 
-    <div class="filtros reveal" role="tablist" aria-label="Filtrar regalos">
-        <button class="filtro activo" data-filtro="todos" role="tab" aria-selected="true">Todos</button>
-        <button class="filtro" data-filtro="disponibles" role="tab" aria-selected="false">Disponibles</button>
-        <button class="filtro" data-filtro="elegidos" role="tab" aria-selected="false">Ya elegidos</button>
+    <div class="barra-acciones reveal">
+        <div class="filtros" role="tablist" aria-label="Filtrar regalos">
+            <button class="filtro activo" data-filtro="todos" role="tab" aria-selected="true">Todos</button>
+            <button class="filtro" data-filtro="disponibles" role="tab" aria-selected="false">Disponibles</button>
+            <button class="filtro" data-filtro="elegidos" role="tab" aria-selected="false">Ya elegidos</button>
+        </div>
+        <button type="button" class="consulta-link" id="abrir-consulta">
+            ¿Ya elegiste un regalo? <span>Revísalo con tu cédula</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </button>
     </div>
 
     <section class="grid" aria-live="polite">
@@ -227,6 +233,34 @@ $csrf     = csrf_token();
                 <span>Volver a la lista</span>
             </button>
         </div>
+    </div>
+</div>
+
+<!-- Modal de consulta por cédula -->
+<div class="modal" id="modal-consulta" role="dialog" aria-modal="true" aria-labelledby="consulta-titulo" hidden>
+    <div class="modal-fondo" data-cerrar-consulta></div>
+    <div class="modal-caja">
+        <button class="modal-cerrar" type="button" data-cerrar-consulta aria-label="Cerrar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <span class="eyebrow">Tu elección</span>
+        <h2 id="consulta-titulo" class="modal-titulo">¿Qué regalo<br><em>elegiste?</em></h2>
+        <p class="modal-nota">Escribe la cédula con la que confirmaste tu regalo y te lo recordamos.</p>
+        <form id="form-consulta" novalidate>
+            <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
+            <label class="campo">
+                <span>Cédula</span>
+                <input type="text" name="cedula" inputmode="numeric" autocomplete="off" maxlength="10" required placeholder="0912345678">
+            </label>
+            <p class="form-error" id="consulta-error" role="alert" hidden></p>
+            <button type="submit" class="btn btn-elegir btn-modal" id="btn-consultar">
+                <span>Ver mi regalo</span>
+                <span class="btn-icono" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+                </span>
+            </button>
+        </form>
+        <div id="consulta-resultado" class="consulta-resultado" hidden></div>
     </div>
 </div>
 

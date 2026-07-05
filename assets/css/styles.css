@@ -186,7 +186,15 @@ header, main, footer { position: relative; z-index: 1; }
 .progreso-texto { font-size: 0.8rem; color: var(--tinta-suave); margin-top: 0.5rem; }
 .progreso-texto strong { color: var(--rosa-hondo); }
 
-/* ---------- Filtros ---------- */
+/* ---------- Filtros y consulta ---------- */
+.barra-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.6rem;
+}
 .filtros {
     display: inline-flex;
     gap: 0.25rem;
@@ -195,8 +203,32 @@ header, main, footer { position: relative; z-index: 1; }
     background: rgba(255, 255, 255, 0.75);
     border: 1px solid var(--linea);
     box-shadow: 0 12px 30px -18px rgba(158, 77, 99, 0.3);
-    margin-bottom: 2.6rem;
 }
+.consulta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 550;
+    color: var(--tinta-suave);
+    padding: 0.5rem 0.25rem;
+    transition: color 0.45s var(--ease);
+}
+.consulta-link span {
+    font-weight: 700;
+    color: var(--rosa-hondo);
+    text-decoration: underline;
+    text-decoration-color: rgba(201, 111, 133, 0.4);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.45s var(--ease);
+}
+.consulta-link svg { width: 0.85rem; height: 0.85rem; color: var(--rosa-fuerte); transition: transform 0.45s var(--ease); }
+.consulta-link:hover span { text-decoration-color: var(--rosa-hondo); }
+.consulta-link:hover svg { transform: translate(2px, -2px); }
 .filtro {
     border: 0;
     background: transparent;
@@ -578,11 +610,44 @@ header, main, footer { position: relative; z-index: 1; }
 #paso-gracias { text-align: center; }
 #paso-gracias .btn-modal { margin-top: 1.4rem; }
 
+/* ---------- Resultado de consulta ---------- */
+#form-consulta { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.consulta-resultado { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 0.8rem; }
+.resultado-saludo { font-size: 0.9rem; font-weight: 600; color: var(--tinta); }
+.resultado-vacio { font-size: 0.9rem; color: var(--tinta-suave); }
+.resultado-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.7rem;
+    border-radius: 1.2rem;
+    background: var(--blanco);
+    border: 1px solid var(--linea);
+    box-shadow: 0 14px 30px -20px rgba(158, 77, 99, 0.35);
+}
+.resultado-item img {
+    width: 3.6rem;
+    height: 3.6rem;
+    object-fit: cover;
+    border-radius: 0.9rem;
+    flex: none;
+}
+.resultado-item strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    line-height: 1.25;
+}
+.resultado-item small { color: var(--tinta-suave); font-size: 0.76rem; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
     .lista-encabezado { flex-direction: column; align-items: flex-start; }
     .progreso { width: 100%; }
     .grid { grid-template-columns: 1fr; gap: 1.4rem; }
+    .barra-acciones { flex-direction: column; align-items: stretch; }
     .filtros { width: 100%; justify-content: space-between; }
     .filtro { flex: 1; padding: 0.55rem 0.5rem; }
+    .consulta-link { justify-content: center; }
 }
