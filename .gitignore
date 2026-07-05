@@ -1,0 +1,12 @@
+# Configuración real con credenciales — nunca al repositorio
+includes/config.php
+
+# Imágenes subidas por el administrador
+uploads/*
+!uploads/.htaccess
+!uploads/index.html
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
